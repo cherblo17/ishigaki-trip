@@ -138,6 +138,11 @@ ul.ln input:checked+span{opacity:.45;text-decoration:line-through}
 @media (min-width:700px){h1{font-size:2.7rem}.shisa{top:36px}}
 @media (max-width:340px){.shisa{width:66px;right:0}}
 /* memo */
+.ptm{display:flex;align-items:center;gap:0}
+.ptm button{border:0;background:none;color:var(--teal-d);width:44px;height:44px;margin:-8px 0 -8px 2px;display:grid;place-items:center;cursor:pointer;padding:0}
+.ptm svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round}
+.ptm button[aria-expanded="true"]{color:var(--teal)}
+.mnote{margin:-6px 0 16px;padding:10px 12px;border-left:2px solid var(--teal);background:rgba(17,128,141,.06)}
 nav button{font-size:.66rem}
 @media (max-width:360px){nav button{font-size:.6rem;letter-spacing:0}}
 .mm textarea{width:100%;min-height:96px;resize:vertical;font:400 1rem/1.7 var(--sans);color:var(--ink);border:1px solid var(--line);border-radius:0;background:#fff;padding:11px 12px;display:block}
@@ -221,8 +226,8 @@ ul.mn p{margin:0;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.8}
 </section>
 
 <section id="memo" hidden class="mm">
-  <h2 class="pt">備忘録</h2>
-  <p class="note">思ったことをその場で記録。次の旅行に活かせます。</p>
+  <h2 class="pt ptm">備忘録<button id="mi" type="button" aria-expanded="false" aria-controls="mnote" aria-label="備忘録の説明を表示"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.5"/><circle cx="12" cy="7.8" r=".6" fill="currentColor"/></svg></button></h2>
+  <p class="note mnote" id="mnote" hidden>思ったことをその場で記録。次の旅行に活かせます。</p>
   <div class="seg" id="mu" role="group" aria-label="書いた人"><button data-u="波瑠" aria-pressed="false">波瑠</button><button data-u="咲葉" aria-pressed="true">咲葉</button></div>
   <div class="seg" id="mc" role="group" aria-label="種類"><button data-c="0" aria-pressed="true">良かった</button><button data-c="1" aria-pressed="false">反省</button><button data-c="2" aria-pressed="false">次回へ</button></div>
   <textarea id="mt" placeholder="今思ったことを書く（例：フェリーは早めに並ぶ）" aria-label="備忘録の内容"></textarea>
@@ -327,6 +332,7 @@ function rm(){const L=$("#ml");L.innerHTML="";const a=items(snap.memo).reverse()
   const x=el("button","x",mask===it.id?"本当に削除":"削除");if(mask===it.id)x.classList.add("ask");x.setAttribute("aria-label","この記録を削除");
   x.onclick=()=>{if(mask!==it.id){mask=it.id;rm();return}mask=null;delete snap.memo[it.id];draw();api("/memo/"+it.id,"DELETE").catch(()=>status(false))};
   h.appendChild(x);li.append(h,el("p",0,it.t));L.appendChild(li)})}
+$("#mi").onclick=()=>{const n=$("#mnote"),o=n.hidden;n.hidden=!o;$("#mi").setAttribute("aria-expanded",o);$("#mi").setAttribute("aria-label",o?"備忘録の説明を閉じる":"備忘録の説明を表示")};
 $("#mc").onclick=e=>{const b=e.target.closest("button");if(!b)return;mcat=+b.dataset.c;[...$("#mc").children].forEach(x=>x.setAttribute("aria-pressed",x===b))};
 $("#mfl").onclick=e=>{const b=e.target.closest("button");if(!b)return;mfil=+b.dataset.f;mask=null;[...$("#mfl").children].forEach(x=>x.setAttribute("aria-pressed",x===b));rm()};
 $("#madd").onclick=()=>{const v=$("#mt").value.trim();if(!v)return;const id=uid(),o={t:v,c:mcat,u:muser,ts:Date.now()};
